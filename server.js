@@ -16,14 +16,17 @@ const createHashedPassword = (password) => {
 
 app.use("/public", express.static("public")); //static 파일(css) 보관하기 위해 public폴더를 쓸 것이다
 
-var db; //db를 저장할 변수 선언
-MongoClient.connect(process.env.DB_URL, function (error, client) {
-  if (error) return console.log(error); //에러처리
-  db = client.db("todoapp"); //todoapp 이라는 database에 연결
+var mysql = require("mysql");
+var connection = mysql.createConnection({
+  host: "leteatgo.cuom1ib1jx9z.ap-northeast-2.rds.amazonaws.com", // 호스트 주소
+  user: "admin", // mysql user
+  password: process.env.DB_PASSWORD, // mysql password
+  database: "leteatgo", // mysql 데이터베이스
+});
+connection.connect();
 
-  app.listen(process.env.PORT, function () {
-    console.log("listening on 8080");
-  });
+app.listen(process.env.PORT, function () {
+  console.log("listening on 3306");
 });
 
 var logcheck = 0;
