@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+      <style>
+        *{
+          font-family: 'Noto Sans KR', sans-serif;
+        }
+      </style>
+  </head>
+  <body>
+    <header>
+      <div style=background-color:#FFAAB3>
+        <h2 style=color:#F8E6E6>
+          입맛춤
+        </h2>
+      </tr>
+    </div>
+    </br></br>
+    <table width="400" cellspacing=0 cellpadding=0 border="0" align="center">
+      <tr>
+        <td style="padding:20px; line-height:200%; border:2px solid #FFAAB3;">
+            안녕하세요. 저희는 아주대학교 파란학기 프로그램에 참여하고 있는 팀 Let Eat Go 입니다.
+            저희는 사용자의 취향을 파악하여 음식 레시피를 추천해주는 앱 <입맛춤>을 기획하고 있습니다.
+            </br></br>
+            본 조사의 목적은 레시피 추천시스템의 성능을 향상시키기 위한 사용자 음식 선호 데이터를 모으는 것입니다.
+            </br></br>
+            다음 5개의 페이지에서 각각 12개의 음식이 제시됩니다. 제시된 음식 중 집에서 만들어 먹고싶은 음식을 있는 대로 선택해 주세요.
+            </br></br>
+            설문에 응하여주셔서 감사합니다.
+        </td>
+      </tr>
+    </table>
+
+    <form name="form1" method="get" action="/survey">
+    <input type="hidden" name="id" value="1">
+    <table width="320" cellspacing=0 cellpadding=0 ceborder=0 align="center">
+    <tr height="70">
+        <td colspan="2" align="center">
+            성별을 선택해 주세요.
+        </td>
+    </tr>
+    <tr height="40" bgcolor="#FFAAB3">
+        <td align=center>
+            남자 <input type="checkbox" name="sex" value="0">
+        </td>
+        <td align=center>
+            여자 <input type="checkbox" name="sex" value="1">
+        </td>
+    </tr>
+    <tr height="70">
+      <td colspan="2" align="center">
+          <span onClick="formCheck()" style="padding:5px; background-color:#FFAAB3; cursor:pointer; ">
+            &nbsp; &nbsp; Start &nbsp; &nbsp;
+          </span>
+        </td>
+  </tr>
+  </table>
+</form>
+<script type="text/javascript">
+function formCheck() {
+    var elem = document.getElementsByName("sex");
+    var checkIdx = -1;
+
+    for (var i = 0; i < elem.length; i++) {
+      if (elem[i].checked) {
+        checkIdx = i;
+        break;
+      }
+    }
+    if (checkIdx < 0) {
+      alert('성별을 선택하세요')
+      return;
+    }
+
+    form1.submit();
+}
+</script>
+</body>
+</html>
