@@ -12,16 +12,20 @@ const { query } = require("express");
 
 app.use("/public", express.static("public")); //static 파일(css) 보관하기 위해 public폴더를 쓸 것이다
 
-var mysql = require("mysql");
+const mysql = require("mysql");
 var db_info = {
-  host: "localhost", // 호스트 주소
-  port: 3306,
+  host: "leteatgo.cuom1ib1jx9z.ap-northeast-2.rds.amazonaws.com", // 호스트 주소
+  port: process.env.PORT,
   user: "admin", // mysql user
   password: process.env.DB_PASSWORD, // mysql password
   database: "leteatgo", // mysql 데이터베이스
 };
 var connection = mysql.createConnection(db_info);
 connection.connect();
+
+app.listen(8880, function () {
+  console.log("listening on 8880");
+});
 
 app.get("/survey", function (req, res) {
   if (!req.query.id) {
