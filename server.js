@@ -37,6 +37,7 @@ app.get("/survey", function (req, res) {
     sqlConn.connect();
     var start = 12 * (id - 1);
     var sql = "select foodid, name, image from food LIMIT " + start + ",12";
+    //db에서 랜덤으로 받아오는 부분
     var chkdat = "";
     if (id == 1) {
       qry.qdat = qry.sex;
@@ -56,6 +57,7 @@ app.get("/survey", function (req, res) {
 
     sqlConn.end();
   } else if (id == 6) {
+    //데이터 :로 분할하고 db저장
     res.render("goodbye.ejs");
   }
 });
