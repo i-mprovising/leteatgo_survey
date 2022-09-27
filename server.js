@@ -18,33 +18,44 @@ var db_info = {
   port: process.env.PORT,
   user: "admin", // mysql user
   password: process.env.DB_PASSWORD, // mysql password
-  database: "leteatgo", // mysql 데이터베이스
+  database: "develop", // mysql 데이터베이스
+  multipleStatements: true,
 };
-var connection = mysql.createConnection(db_info);
-connection.connect();
 
 app.listen(8880, function () {
   console.log("listening on 8880");
 });
 
 app.get("/survey", function (req, res) {
-  if (!req.query.id) {
+  const qry = req.query;
+  console.log(req);
+  const id = parseInt(qry.id);
+  if (!id) {
     res.render("survey.ejs");
-  } else if (req.query.id == "1") {
-    res.render("select.ejs", {
-      id: "2",
-      qdat: req.query.sex,
+  } else if (id >= 1 && id <= 5) {
+    var sqlConn = mysql.createConnection(db_info);
+    sqlConn.connect();
+    var start = 12 * (id - 1);
+    var sql = "select foodid, name, image from food LIMIT " + start + ",12";
+    var chkdat = "";
+    if (id == 1) {
+      qry.qdat = qry.sex;
+    } else {
+      for (var i = 0; i < qry.chk.length; i++) chkdat += ":" + qry.chk[i];
+    }
+    sqlConn.query(sql, function (err, results, fields) {
+      if (err) {
+        console.log(err);
+      }
+      res.render("select.ejs", {
+        id: id,
+        qdat: qry.qdat + chkdat,
+        postList: results,
+      });
     });
-  } else if (req.query.id == "2") {
-    var seldat = "222:333:444:555";
 
-    res.render("select.ejs", {
-      id: "3",
-      qdat: res.query.qdat + ":" + seldat,
-    });
+    sqlConn.end();
+  } else if (id == 6) {
+    res.render("goodbye.ejs");
   }
-});
-
-app.get("/goodbye", function (req, res) {
-  res.render("goodbye.ejs");
 });

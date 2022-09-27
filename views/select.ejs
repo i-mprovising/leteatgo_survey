@@ -12,33 +12,60 @@
         }
       </style>
   </head>
-  <body>
-    <header>
-      <div style=background-color:#FFAAB3>
-        <h2 style=color:#F8E6E6>
+  <body style="margin:0;padding:0;">
+    <div style="background-color:#FFAAB3; margin-bottom:50px; padding: 7px; font-size:18pt; color:#F8E6E6;">
         입맛춤
-        </h2>
-      </tr>
     </div>
-    </br></br>
-    <table width="400" cellspacing=0 cellpadding=0 border="0" align="center">
-      <tr align="center">
-        제시된 음식 중 집에서 만들어 먹고싶은 음식을 있는 대로 선택해 주세요.
+    <style>
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .thumbnail {
+         align-items:flex-start;
+         width:150px;
+         height:200px;
+         margin:5px;
+         text-align:center;
+         border:1px solid #FFAAB3;
+      }
+
+      .thumbnail img { width:150px; height:150px; border:0px; }
+      .thumbnail label { cursor:pointer; }
+    </style>
+
+    <table width="700" cellspacing=0 cellpadding=0 border="0" align="center">
+      <tr>
+        <td align="center">
+          제시된 음식 중 집에서 만들어 먹고싶은 음식을 있는 대로 선택해 주세요.
+        </td>
       </tr>
     </table>
+  </br></br>
 
-    <form name="form1" method="get" action="/servey">
-    <table width="320" cellspacing=0 cellpadding=0 ceborder=0 align="center">
-        <% for (var i = 0; i < postList.length; i++){ %>
+    <form name="form1" method="get" action="/survey">
+    <input type="hidden" name="id" value="<%=id+1%>">
+    <input type="hidden" name="qdat" value="<%=qdat%>">
+    <table width="500" cellspacing=0 cellpadding=0 border=0 align="center">
+    <tr height="600">
+      <td colspan="3" valign="top">
         <div class="container">
-            <img src="<%=postList.image[i]%>">
-            <input type="checkbox" class="checkbox" name="<%=postList.name[i]%>"/>
-            <td><%=postList.name[i]%></td>
+        <% for (var i = 0; i < postList.length; i++){ %>
+          <div class="thumbnail">
+             <label><img src="<%=postList[i].image%>">
+             </br>
+              <input type="checkbox" class="checkbox" name="chk" value="<%=postList[i].foodid%>"/>
+             <%=postList[i].name%></label>
+          </div>
+          <% }%>
         </div>
-        <% }%>
+      </td>
+    </tr>
     <tr height="70">
-      <td colspan="2" align="right">
-          <span onClick="listCheck()" style="padding:5px; background-color:#FFAAB3; cursor:pointer; ">
+      <td width="40%"></td>
+      <td width="20%" align="center"><%=id%> / 5</td>
+      <td width="40%" align="right">
+          <span onClick="next()" style="padding:5px; background-color:#FFAAB3; cursor:pointer; ">
             &nbsp; &nbsp; Next &nbsp; &nbsp;
           </span>
         </td>
@@ -46,15 +73,7 @@
   </table>
 </form>
 <script type="text/javascript">
-    function listCheck() {
-        var elem = document.getElementsByName("favFood")
-        var ret
-
-        for (var i = 0; i < postList.length; i++) {
-            if($("input:checked[name='postList.name[i]").is(":checked")){
-                ret = ret + ':' + postList.foodid[i]
-            }
-        }
+    function next() {
         form1.submit();
     }
     </script>
