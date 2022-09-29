@@ -16,9 +16,9 @@ const mysql = require("mysql");
 const { copyFileSync } = require("fs");
 var db_info = {
   host: "leteatgo.cuom1ib1jx9z.ap-northeast-2.rds.amazonaws.com", // 호스트 주소
-  port: 3306, //process.env.PORT,
+  port: process.env.PORT,
   user: "admin", // mysql user
-  password: "leteatgo123!", //process.env.DB_PASSWORD, // mysql password
+  password: process.env.DB_PASSWORD, // mysql password
   database: "develop", // mysql 데이터베이스
   multipleStatements: true,
 };
