@@ -26,38 +26,45 @@ app.listen(8880, function () {
   console.log("listening on 8880");
 });
 
+var foodArr;
+var sqlConn = mysql.createConnection(db_info);
+sqlConn.connect();
+sqlConn.query(
+  "SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
+  function (err, results) {
+    if (err) console.log(err + "this is error");
+    foodArr = results;
+    //    console.log(foodArr);
+    //    console.log("length" + foodArr.length);
+  }
+);
+sqlConn.end();
+
 app.get("/survey", function (req, res) {
-  const qry = req.query;
-  console.log(req);
+  res.render("survey.ejs");
+});
+
+app.post("/survey/select", function (req, res) {
+  const qry = req.body;
   const id = parseInt(qry.id);
-  if (!id) {
-    res.render("survey.ejs");
-  } else if (id >= 1 && id <= 5) {
-    var sqlConn = mysql.createConnection(db_info);
-    sqlConn.connect();
-    var start = 12 * (id - 1);
-    var sql = "select foodid, name, image from food LIMIT " + start + ",12";
-    //db에서 랜덤으로 받아오는 부분
+  if (id >= 1 && id <= 5) {
     var chkdat = "";
-    if (id == 1) {
-      qry.qdat = qry.sex;
-    } else {
+    if (id > 1 && qry.chk) {
       for (var i = 0; i < qry.chk.length; i++) chkdat += ":" + qry.chk[i];
     }
-    sqlConn.query(sql, function (err, results, fields) {
-      if (err) {
-        console.log(err);
-      }
-      res.render("select.ejs", {
-        id: id,
-        qdat: qry.qdat + chkdat,
-        postList: results,
-      });
+    var foodList = foodArr.slice((id - 1) * 12, id * 12); //12개씩 복사
+    res.render("select.ejs", {
+      id: id,
+      qdat: qry.qdat + chkdat,
+      postList: foodList,
     });
-
-    sqlConn.end();
   } else if (id == 6) {
     //데이터 :로 분할하고 db저장
-    res.render("goodbye.ejs");
+    console.log("save!!!!!!!!!!!");
+    res.redirect("/survey/finish");
   }
+});
+
+app.get("/survey/finish", function (req, res) {
+  res.render("goodbye.ejs");
 });
