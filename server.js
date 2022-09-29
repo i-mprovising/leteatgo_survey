@@ -13,11 +13,12 @@ const { query } = require("express");
 app.use("/public", express.static("public")); //static 파일(css) 보관하기 위해 public폴더를 쓸 것이다
 
 const mysql = require("mysql");
+const { copyFileSync } = require("fs");
 var db_info = {
   host: "leteatgo.cuom1ib1jx9z.ap-northeast-2.rds.amazonaws.com", // 호스트 주소
-  port: process.env.PORT,
+  port: 3306, //process.env.PORT,
   user: "admin", // mysql user
-  password: process.env.DB_PASSWORD, // mysql password
+  password: "leteatgo123!", //process.env.DB_PASSWORD, // mysql password
   database: "develop", // mysql 데이터베이스
   multipleStatements: true,
 };
@@ -38,19 +39,26 @@ sqlConn.query(
     //    console.log("length" + foodArr.length);
   }
 );
-sqlConn.end();
+
+
 
 app.get("/survey", function (req, res) {
   res.render("survey.ejs");
 });
 
+var chkdat = "";
+var sex; //남자 0 여자 1
 app.post("/survey/select", function (req, res) {
   const qry = req.body;
   const id = parseInt(qry.id);
+
   if (id >= 1 && id <= 5) {
-    var chkdat = "";
+    if(id == 1)
+      sex = qry.sdat;
+    
     if (id > 1 && qry.chk) {
-      for (var i = 0; i < qry.chk.length; i++) chkdat += ":" + qry.chk[i];
+      for (var i = 0; i < qry.chk.length; i++)
+      chkdat += " " + qry.chk[i];
     }
     var foodList = foodArr.slice((id - 1) * 12, id * 12); //12개씩 복사
     res.render("select.ejs", {
@@ -58,10 +66,19 @@ app.post("/survey/select", function (req, res) {
       qdat: qry.qdat + chkdat,
       postList: foodList,
     });
-  } else if (id == 6) {
+  } 
+  else if (id == 6) {
     //데이터 :로 분할하고 db저장
+    //console.log(chkdat);
+    
+    const sql = "insert into eval (sex, survey) values(b?, ?)";
+    sqlConn.query(sql, [sex, chkdat], function(err,result){
+      if(err) throw err;
+      res.redirect("/survey/finish");
+    });
+
     console.log("save!!!!!!!!!!!");
-    res.redirect("/survey/finish");
+    sqlConn.end();
   }
 });
 
