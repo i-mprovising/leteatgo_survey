@@ -40,45 +40,51 @@ sqlConn.query(
   }
 );
 
-
-
 app.get("/survey", function (req, res) {
   res.render("survey.ejs");
 });
 
 var chkdat = "";
+var notchkd = "";
 var sex; //남자 0 여자 1
 app.post("/survey/select", function (req, res) {
   const qry = req.body;
   const id = parseInt(qry.id);
 
   if (id >= 1 && id <= 5) {
-    if(id == 1)
-      sex = qry.sdat;
-    
+    if (id == 1) sex = qry.sdat;
     if (id > 1 && qry.chk) {
-      for (var i = 0; i < qry.chk.length; i++)
-      chkdat += " " + qry.chk[i];
+      for (var i = 0; i < qry.chk.length; i++) chkdat += ":" + qry.chk[i];
     }
     var foodList = foodArr.slice((id - 1) * 12, id * 12); //12개씩 복사
     res.render("select.ejs", {
       id: id,
-      qdat: qry.qdat + chkdat,
+      qdat: chkdat,
       postList: foodList,
     });
-  } 
-  else if (id == 6) {
+  } else if (id == 6) {
     //데이터 :로 분할하고 db저장
     //console.log(chkdat);
-    
-    const sql = "insert into eval (sex, survey) values(b?, ?)";
-    sqlConn.query(sql, [sex, chkdat], function(err,result){
-      if(err) throw err;
+    var chkd_list = chkdat.split(" ");
+    for (var i = 0; i < foodArr.length; i++) {
+      var ch = 0;
+      for (var j = 0; j < chkd_list.length; j++) {
+        if (foodArr[i].foodid == chkd_list[j]) {
+          ch == 1;
+        }
+      }
+      if (ch == 0) {
+        notchkd += foodArr[i].foodid + ":";
+      }
+    }
+    const sql =
+      "insert into eval (user_id, sex, chkd, not_chkd) values(0, b?, ?, ?)";
+    sqlConn.query(sql, [sex, chkdat, notchkd], function (err, result) {
+      if (err) throw err;
       res.redirect("/survey/finish");
     });
 
-    console.log("save!!!!!!!!!!!");
-    sqlConn.end();
+    //  console.log("save!!!!!!!!!!!");
   }
 });
 
