@@ -66,8 +66,8 @@ app.post("/survey/select", function (req, res) {
     var notchkd_list = "";
     for (var i = 0; i < foodArr.length; i++) {
       var ch = 0;
-      for (var j = 1; j < chkd_list.length; j++) {
-        if (foodArr[i].foodid == chkd_list[j]) {
+      for (var j = 1; j < datArr.length; j++) {
+        if (foodArr[i].foodid == datArr[j]) {
           ch = 1;
           break;
         }
