@@ -68,7 +68,8 @@ app.post("/survey/select", function (req, res) {
       var ch = 0;
       for (var j = 1; j < chkd_list.length; j++) {
         if (foodArr[i].foodid == chkd_list[j]) {
-          ch == 1;
+          ch = 1;
+          break;
         }
       }
       if (ch == 0) {
