@@ -37,10 +37,6 @@ sqlConn.query(
   }
 );
 
-var chkdat = "";
-var notchkd= "";
-var sex;
-
 app.get("/survey", function (req, res) {
   res.render("survey.ejs");
 });
@@ -49,45 +45,46 @@ app.post("/survey/select", function (req, res) {
   const qry = req.body;
   const id = parseInt(qry.id);
   if (id >= 1 && id <= 5) {
-    if(id==1){
-      sex = qry.sdat;
-    }
+    var chkdat = "";
     if (id > 1 && qry.chk) {
-      for (var i = 0; i < qry.chk.length; i++){
-        chkdat += ":" + qry.chk[i];
-      }
+      if (!Array.isArray(qry.chk)) qry.chk = [qry.chk];
+      for (var i = 0; i < qry.chk.length; i++) chkdat += ":" + qry.chk[i];
     }
     var foodList = foodArr.slice((id - 1) * 12, id * 12); //12개씩 복사
     res.render("select.ejs", {
       id: id,
-      qdat: chkdat,
+      qdat: qry.qdat + chkdat,
       postList: foodList,
     });
-  } 
-  else if (id == 6) {
+    //    console.log(qry);
+    //    console.log("qdat=" + qry.qdat + chkdat);
+  } else if (id == 6) {
     //데이터 :로 분할하고 db저장
-    console.log(chkdat);
-
-    var chkd_list = chkdat.split(":");
-    for(var i=0;i<foodArr.length;i++){
+    var datArr = qry.qdat.split(":");
+    var sex = datArr[0];
+    var chkd_list = qry.qdat.substr(2); //qry.qdat.substr(qry.qdat.indexOf(":") + 1);
+    var notchkd_list = "";
+    for (var i = 0; i < foodArr.length; i++) {
       var ch = 0;
-      for(var j=0;j<chkd_list.length;j++){
-        if(foodArr[i].foodid==chkd_list[j]){
+      for (var j = 1; j < chkd_list.length; j++) {
+        if (foodArr[i].foodid == chkd_list[j]) {
           ch == 1;
         }
       }
-      if(ch==0){
-        notchkd += foodArr[i].foodid + ":";
+      if (ch == 0) {
+        notchkd_list += ":" + foodArr[i].foodid;
       }
     }
-    console.log(sex,chkdat, notchkd);
-    const sql = "insert into eval (sex, chkd, not_chkd) values(b?, ?, ?)";
-    sqlConn.query(sql, [sex, chkdat, notchkd], function(err,result){
-      if(err) throw err;
-      result.redirect("/survey/finish");
+    notchkd_list = notchkd_list.substr(1);
+    //    console.log("sex =" + sex + " chkd_list =" + chkd_list, " notchkd_list =" + notchkd_list);
+
+    const sql =
+      "insert into eval (user_id, sex, chkd, not_chkd) values(0, b?, ?, ?)";
+    sqlConn.query(sql, [sex, chkd_list, notchkd_list], function (err, result) {
+      if (err) throw err;
+      res.redirect("/survey/finish");
     });
     console.log("save!!!!!!!!!!!");
-    sqlConn.end();
   }
 });
 

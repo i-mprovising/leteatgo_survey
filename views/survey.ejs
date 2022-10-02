@@ -41,10 +41,10 @@
     </tr>
     <tr height="40" bgcolor="#FFAAB3">
         <td align=center>
-            남자 <input type="checkbox" name="sdat" value=0>
+            남자 <input type="checkbox" name="qdat" value="0">
         </td>
         <td align=center>
-            여자 <input type="checkbox" name="sdat" value=1>
+            여자 <input type="checkbox" name="qdat" value="1">
         </td>
     </tr>
     <tr height="70">
@@ -58,7 +58,7 @@
 </form>
 <script type="text/javascript">
 function formCheck() {
-    var elem = document.getElementsByName("sdat");
+    var elem = document.getElementsByName("qdat");
     var checkIdx = -1;
 
     for (var i = 0; i < elem.length; i++) {
