@@ -65,9 +65,9 @@ app.post("/survey/select", function (req, res) {
       if (!Array.isArray(qry.chk)) qry.chk = [qry.chk];
       for (var i = 0; i < qry.chk.length; i++) chkdat += ":" + qry.chk[i];
     }
-    console.log("chdkat ",chkdat);
+    //console.log("chdkat ",chkdat);
     qry.qdat += chkdat;
-    console.log("datARR: ",qry.qdat);
+    //console.log("datARR: ",qry.qdat);
     var datArr = qry.qdat.split(":");
     var sex = datArr[0];
     var chkd_list = qry.qdat.substr(2); //qry.qdat.substr(qry.qdat.indexOf(":") + 1);
@@ -85,7 +85,7 @@ app.post("/survey/select", function (req, res) {
       }
     }
     notchkd_list = notchkd_list.substr(1);
-    console.log("sex =" + sex + " chkd_list =" + chkd_list, " notchkd_list =" + notchkd_list);
+    //console.log("sex =" + sex + " chkd_list =" + chkd_list, " notchkd_list =" + notchkd_list);
 
     const sql =
       "insert into eval (user_id, sex, chkd, not_chkd) values(0, b?, ?, ?)";
