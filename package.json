@@ -2,9 +2,15 @@
   "name": "node.js_prac",
   "version": "1.0.0",
   "main": "server.js",
+  "homepage" : "https://Leteatgo-Ajou.github.io/taste_survey/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
+    
+  },
+  "script": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +20,7 @@
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
+    "gh-pages": "^4.0.0",
     "method-override": "^3.0.0",
     "moment": "^2.29.4",
     "mongodb": "^4.6.0",
