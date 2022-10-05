@@ -29,16 +29,31 @@ app.listen(8880, function () {
 var foodArr;
 var sqlConn = mysql.createConnection(db_info);
 
-app.get("/survey", function (req, res) {
+const promise = new Promise((resolve, reject) => {
   sqlConn.connect();
-  sqlConn.query(
-    "SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
+  sqlConn.query("SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
     function (err, results) {
       if (err) console.log(err + "this is error");
       foodArr = results;
+      if(foodArr){
+        resolve();
+      }
+      else{
+        reject();
+      }
+      
     }
   );
-  res.render("survey.ejs");
+});
+
+app.get("/survey", function (req, res) {
+  promise
+  .then(()=>{
+    res.render("survey.ejs");
+  })
+  .catch((err)=>{
+    console.error(err);
+  })
 });
 
 app.post("/survey/select", function (req, res) {
