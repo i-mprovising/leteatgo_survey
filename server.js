@@ -28,16 +28,16 @@ app.listen(8880, function () {
 
 var foodArr;
 var sqlConn = mysql.createConnection(db_info);
-sqlConn.connect();
-sqlConn.query(
-  "SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
-  function (err, results) {
-    if (err) console.log(err + "this is error");
-    foodArr = results;
-  }
-);
 
 app.get("/survey", function (req, res) {
+  sqlConn.connect();
+  sqlConn.query(
+    "SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
+    function (err, results) {
+      if (err) console.log(err + "this is error");
+      foodArr = results;
+    }
+  );
   res.render("survey.ejs");
 });
 
