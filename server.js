@@ -28,32 +28,35 @@ app.listen(8880, function () {
 
 var foodArr;
 var sqlConn = mysql.createConnection(db_info);
-
-const promise = new Promise((resolve, reject) => {
-  sqlConn.connect();
-  sqlConn.query("SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
-    function (err, results) {
-      if (err) console.log(err + "this is error");
-      foodArr = results;
-      if(foodArr){
-        resolve();
+sqlConn.connect();
+function getRandFood() {
+  return new Promise(async (resolve, reject) => {
+    await sqlConn.query(
+      "SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
+      function (err, results) {
+        if (err) console.log(err + "this is error");
+        console.log(results);
+        foodArr = results;
+        console.log(foodArr);
+        if (foodArr) {
+          resolve();
+        } else {
+          reject();
+        }
       }
-      else{
-        reject();
-      }
-      
-    }
-  );
-});
+    );
+  });
+}
 
 app.get("/survey", function (req, res) {
+  const promise = getRandFood();
   promise
-  .then(()=>{
-    res.render("survey.ejs");
-  })
-  .catch((err)=>{
-    console.error(err);
-  })
+    .then(() => {
+      res.render("survey.ejs");
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 });
 
 app.post("/survey/select", function (req, res) {
@@ -108,6 +111,7 @@ app.post("/survey/select", function (req, res) {
       if (err) throw err;
       res.redirect("/survey/finish");
     });
+    sqlConn.close();
     console.log("save!!!!!!!!!!!");
   }
 });
