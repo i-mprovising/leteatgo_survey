@@ -13,6 +13,7 @@ const { query } = require("express");
 app.use("/public", express.static("public")); //static 파일(css) 보관하기 위해 public폴더를 쓸 것이다
 
 const mysql = require("mysql");
+const { notDeepStrictEqual } = require("assert");
 var db_info = {
   host: "leteatgo.cuom1ib1jx9z.ap-northeast-2.rds.amazonaws.com", // 호스트 주소
   port: process.env.PORT,
@@ -29,14 +30,14 @@ app.listen(8880, function () {
 var foodArr;
 var sqlConn = mysql.createConnection(db_info);
 sqlConn.connect();
-function getRandFood() {
+async function getRandFood() {
   return new Promise(async (resolve, reject) => {
     await sqlConn.query(
       "SELECT foodid, name, image FROM food ORDER BY RAND() LIMIT 60", // 랜덤으로 60개 받아오기
       function (err, results) {
         if (err) console.log(err + "this is error");
         console.log(results);
-        foodArr = results;
+        foodArr = [...results];
         console.log(foodArr);
         if (foodArr) {
           resolve();
@@ -105,16 +106,17 @@ app.post("/survey/select", function (req, res) {
     notchkd_list = notchkd_list.substr(1);
     //console.log("sex =" + sex + " chkd_list =" + chkd_list, " notchkd_list =" + notchkd_list);
 
-    const sql =
-      "insert into eval (user_id, sex, chkd, not_chkd) values(0, b?, ?, ?)";
-    sqlConn.query(sql, [sex, chkd_list, notchkd_list], function (err, result) {
+    const sql = "insert into eval (user_id, sex, chkd, not_chkd) values(0, b?, ?, ?)";
+    sqlConn.query(sql, [sex, chkd_list, notchkd_list], async function (err, result) {
       if (err) throw err;
+      await sqlConn.end();
       res.redirect("/survey/finish");
     });
-    sqlConn.close();
+
     console.log("save!!!!!!!!!!!");
   }
 });
+
 
 app.get("/survey/finish", function (req, res) {
   res.render("goodbye.ejs");
